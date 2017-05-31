@@ -1,0 +1,29 @@
+{
+  "name": "Bittrex Count",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "Count Volume, Seller, Buyer, Last Price",
+  "icons": {
+    "20": "images/icon_20.png",
+    "40": "images/icon_40.png"
+  },
+  "default_locale": "en",
+  "browser_action": {
+    "default_icon": {
+      "20": "images/icon_20.png",
+      "40": "images/icon_40.png"
+    },
+    "default_title": "Bittrex Ext",
+    "default_popup": "popup.html"
+  },
+  "background":{
+    "scripts":["scripts/background.js"]
+  },
+  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "permissions": [
+    "notifications",
+    "management",
+    "storage",
+    "*://bittrex.com/*"
+  ]
+}

@@ -1,0 +1,11 @@
+
+{
+  "appName": {
+    "message": "Bittrex Ext",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "Chrome extension for Bittrex",
+    "description": "The description of the application"
+  }
+}
