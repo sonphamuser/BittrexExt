@@ -18,7 +18,8 @@ function notifications(title, message) {
         var notification = new Notification(title, {
             type: "basic",
             icon: "images/icon_40.png",
-            body: message
+            body: message,
+            requireInteraction: true
         });
     }
     notification.onclick = function () {
@@ -46,29 +47,25 @@ function bittrex_call_api(url, callback) {
 setInterval(function () {
     chrome.storage.sync.get("bittrex_notifications", function (obj) {
         bittrex_call_api(BITTREX_URL + "/api/v1.1/public/getmarketsummaries", function (data) {
-            var list_items = data['result'];
+            var list_items = data.result;
             // Retrieve the object from storage
-            var retrievedObject = localStorage.getItem('CoinVolumeObj');
-            console.log("Now" + list_items.length);
-            console.log("Old" + retrievedObject.length);
-            for (var i = 0; i < list_items; i++) {
-                for (var j = 0; j < retrievedObject.length; j++) {
-                    if (list_items[i]['MarketName'] === retrievedObject[j]['MarketName']) {
-                        console.log("1");
-                        /*                        if (list_items[i]['BaseVolume'] / retrievedObject[j]['BaseVolume'] == 1) {
-                         var name_coin = list_items[i]['MarketName'];
-                         var message = "BaseVolume" + list_items[i]['BaseVolume'] + "OpenBuyOrders:" + list_items[i]['OpenBuyOrders'];
-                         //notifications(name_coin, message);
-                         }*/
+            var retrievedObject = JSON.parse(localStorage.getItem("CoinVolumeObj"));
+            var oldObj = retrievedObject.result;
+            for (var i = 0; i < list_items.length; i++) {
+                for (var j = 0; j < oldObj.length; j++) {
+                    if (list_items[i].MarketName === oldObj[j].MarketName) {
+                        if (list_items[i].BaseVolume / oldObj[j].BaseVolume >= 1.3) {
+                            var name_coin = list_items[i].MarketName;
+                            var message = "New BaseVolume: " + list_items[i].BaseVolume + "New OpenBuyOrders: " + list_items[i].OpenBuyOrders
+                                + " Old BaseVolume: " + oldObj[j].BaseVolume + " Old OpenBuyOrders: " + oldObj[j].OpenBuyOrders;
+                            notifications(name_coin, message);
+                        }
                     }
                 }
             }
             // Put the object into storage
-            localStorage.setItem('CoinVolumeObj', list_items);
-            Storage.prototype.setObject = function(key, value) {
-                this.setItem(key, JSON.stringify(value));
-            }
+            localStorage.setItem("CoinVolumeObj", JSON.stringify(data));
         })
     });
 
-}, 30000);
+}, 1800000);
